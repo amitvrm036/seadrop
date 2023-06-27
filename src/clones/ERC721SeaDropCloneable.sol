@@ -450,7 +450,7 @@ contract ERC721SeaDropCloneable is
         public
         view
         virtual
-        override(IERC165, ERC721ContractMetadataCloneable)
+        override(ERC721ContractMetadataCloneable)
         returns (bool)
     {
         return
