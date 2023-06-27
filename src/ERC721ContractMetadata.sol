@@ -41,9 +41,9 @@ contract ERC721ContractMetadata is
     ///         for random reveals.
     bytes32 _provenanceHash;
 
-    // /// @notice Track the royalty info: address to receive royalties, and
-    // ///         royalty basis points.
-    // RoyaltyInfo _royaltyInfo;
+    /// @notice Track the royalty info: address to receive royalties, and
+    ///         royalty basis points.
+    RoyaltyInfo _royaltyInfo;
 
     /**
      * @dev Reverts if the sender is not the owner or the contract itself.
@@ -168,31 +168,31 @@ contract ERC721ContractMetadata is
         emit ProvenanceHashUpdated(oldProvenanceHash, newProvenanceHash);
     }
 
-    // /**
-    //  * @notice Sets the address and basis points for royalties.
-    //  *
-    //  * @param newInfo The struct to configure royalties.
-    //  */
-    // function setRoyaltyInfo(RoyaltyInfo calldata newInfo) external {
-    //     // Ensure the sender is only the owner or contract itself.
-    //     _onlyOwnerOrSelf();
+    /**
+     * @notice Sets the address and basis points for royalties.
+     *
+     * @param newInfo The struct to configure royalties.
+     */
+    function setRoyaltyInfo(RoyaltyInfo calldata newInfo) external {
+        // Ensure the sender is only the owner or contract itself.
+        _onlyOwnerOrSelf();
 
-    //     // Revert if the new royalty address is the zero address.
-    //     if (newInfo.royaltyAddress == address(0)) {
-    //         revert RoyaltyAddressCannotBeZeroAddress();
-    //     }
+        // Revert if the new royalty address is the zero address.
+        if (newInfo.royaltyAddress == address(0)) {
+            revert RoyaltyAddressCannotBeZeroAddress();
+        }
 
-    //     // Revert if the new basis points is greater than 10_000.
-    //     if (newInfo.royaltyBps > 10_000) {
-    //         revert InvalidRoyaltyBasisPoints(newInfo.royaltyBps);
-    //     }
+        // Revert if the new basis points is greater than 10_000.
+        if (newInfo.royaltyBps > 10_000) {
+            revert InvalidRoyaltyBasisPoints(newInfo.royaltyBps);
+        }
 
-    //     // Set the new royalty info.
-    //     _royaltyInfo = newInfo;
+        // Set the new royalty info.
+        _royaltyInfo = newInfo;
 
-    //     // Emit an event with the updated params.
-    //     emit RoyaltyInfoUpdated(newInfo.royaltyAddress, newInfo.royaltyBps);
-    // }
+        // Emit an event with the updated params.
+        emit RoyaltyInfoUpdated(newInfo.royaltyAddress, newInfo.royaltyBps);
+    }
 
     /**
      * @notice Returns the base URI for token metadata.
@@ -233,45 +233,45 @@ contract ERC721ContractMetadata is
         return _provenanceHash;
     }
 
-    // /**
-    //  * @notice Returns the address that receives royalties.
-    //  */
-    // function royaltyAddress() external view returns (address) {
-    //     return _royaltyInfo.royaltyAddress;
-    // }
+    /**
+     * @notice Returns the address that receives royalties.
+     */
+    function royaltyAddress() external view returns (address) {
+        return _royaltyInfo.royaltyAddress;
+    }
 
-    // /**
-    //  * @notice Returns the royalty basis points out of 10_000.
-    //  */
-    // function royaltyBasisPoints() external view returns (uint256) {
-    //     return _royaltyInfo.royaltyBps;
-    // }
+    /**
+     * @notice Returns the royalty basis points out of 10_000.
+     */
+    function royaltyBasisPoints() external view returns (uint256) {
+        return _royaltyInfo.royaltyBps;
+    }
 
-    // /**
-    //  * @notice Called with the sale price to determine how much royalty
-    //  *         is owed and to whom.
-    //  *
-    //  * @ param  _tokenId     The NFT asset queried for royalty information.
-    //  * @param  _salePrice    The sale price of the NFT asset specified by
-    //  *                       _tokenId.
-    //  *
-    //  * @return receiver      Address of who should be sent the royalty payment.
-    //  * @return royaltyAmount The royalty payment amount for _salePrice.
-    //  */
-    // function royaltyInfo(
-    //     uint256, /* _tokenId */
-    //     uint256 _salePrice
-    // ) external view returns (address receiver, uint256 royaltyAmount) {
-    //     // Put the royalty info on the stack for more efficient access.
-    //     RoyaltyInfo storage info = _royaltyInfo;
+    /**
+     * @notice Called with the sale price to determine how much royalty
+     *         is owed and to whom.
+     *
+     * @ param  _tokenId     The NFT asset queried for royalty information.
+     * @param  _salePrice    The sale price of the NFT asset specified by
+     *                       _tokenId.
+     *
+     * @return receiver      Address of who should be sent the royalty payment.
+     * @return royaltyAmount The royalty payment amount for _salePrice.
+     */
+    function royaltyInfo(
+        uint256, /* _tokenId */
+        uint256 _salePrice
+    ) external view returns (address receiver, uint256 royaltyAmount) {
+        // Put the royalty info on the stack for more efficient access.
+        RoyaltyInfo storage info = _royaltyInfo;
 
-    //     // Set the royalty amount to the sale price times the royalty basis
-    //     // points divided by 10_000.
-    //     royaltyAmount = (_salePrice * info.royaltyBps) / 10_000;
+        // Set the royalty amount to the sale price times the royalty basis
+        // points divided by 10_000.
+        royaltyAmount = (_salePrice * info.royaltyBps) / 10_000;
 
-    //     // Set the receiver of the royalty.
-    //     receiver = info.royaltyAddress;
-    // }
+        // Set the receiver of the royalty.
+        receiver = info.royaltyAddress;
+    }
 
     /**
      * @notice Returns whether the interface is supported.
@@ -282,7 +282,7 @@ contract ERC721ContractMetadata is
         public
         view
         virtual
-        override(ERC721A)
+        override(IERC165, ERC721A)
         returns (bool)
     {
         return
